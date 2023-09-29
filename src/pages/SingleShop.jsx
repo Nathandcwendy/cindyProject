@@ -19,6 +19,7 @@ import {
 import { GiAutoRepair } from "react-icons/gi";
 import { IconContext } from "react-icons/lib";
 import useFirebase from "../hooks/useFirebase";
+import { locations } from "../utils/utils";
 
 const SingleShop = () => {
   const { location: locationParams } = useParams();
@@ -48,7 +49,7 @@ const SingleShop = () => {
     isLoading: secondaryIsLoading,
     fetchError: secondaryFetchError,
     hasNextPage,
-  } = useFirebase(location, lastDoc, 2, null, searchServices);
+  } = useFirebase(location, lastDoc, 8, null, searchServices);
 
   useEffect(() => {
     setRepairShops(secondaryData);
@@ -61,10 +62,14 @@ const SingleShop = () => {
   }, [singleDoc]);
 
   useEffect(() => {
-    const locations = ["lagos", "uyo", "abuja", "ibadan", "enugu"];
     setLastDoc(null);
     if (locationParams) {
-      if (locations.includes(locationParams.toLocaleLowerCase())) {
+      if (
+        locations.find(
+          (i) =>
+            i.collectionName.toLowerCase() == locationParams.toLocaleLowerCase()
+        )
+      ) {
         // console.log(location);
         setLocation(locationParams);
       } else {
@@ -313,6 +318,7 @@ const SingleShop = () => {
       return obj;
     });
   };
+
   return (
     <main className="p-4 min-h-screen text-sm xs:text-base font-barlow font-semibold relative w-full pt-6 md:pt-8 overflow-x-hidden px-4 sm:px-6 md:px-8 lg:pl-72 dark:bg-gray-800 dark:border-gray-700 flex flex-col gap-8">
       {!networkStatus && (
@@ -357,21 +363,23 @@ const SingleShop = () => {
       {doc && !isLoading && (
         <section className="flex flex-col gap-4">
           <div className="w-full flex h-[300px] md:h-[350px] overflow-x-auto noScrollBar">
-            {doc.images.length > 1 ? (
-              doc.images.map((item, index) => (
+            {doc.images != "N/A" ? (
+              doc.images.length > 1 ? (
+                doc.images.map((item, index) => (
+                  <img
+                    alt={`${doc.headers.title} Workshop Image`}
+                    src={item}
+                    key={index}
+                    className="w-5/6 sm:w-2/3 h-full object-cover p-2"
+                  />
+                ))
+              ) : (
                 <img
+                  src={doc.images[0]}
                   alt={`${doc.headers.title} Workshop Image`}
-                  src={item}
-                  key={index}
-                  className="w-5/6 sm:w-2/3 h-full object-cover p-2"
+                  className="w-full h-full object-cover"
                 />
-              ))
-            ) : doc.images.length == 1 ? (
-              <img
-                src={doc.images[0]}
-                alt={`${doc.headers.title} Workshop Image`}
-                className="w-full h-full object-cover"
-              />
+              )
             ) : (
               <img
                 src="https://www.gstatic.com/ads-homeservices/profile_photo_placeholder.png"
@@ -581,7 +589,19 @@ const SingleShop = () => {
         (isLoading && !secondaryIsLoading) ? (
           <>
             <div className="flex w-full gap-4 items-center py-1">
-              {!services && <h3 className="font-bold">Highly Recommended</h3>}
+              {!services && (
+                <h3 className="font-bold">
+                  {locationParams
+                    ? `Recommended Repair Shops In ${
+                        locations.find(
+                          (i) =>
+                            i.collectionName.toLowerCase() ==
+                            locationParams.toLowerCase()
+                        ).name
+                      }`
+                    : "Recommended Repair Shops"}
+                </h3>
+              )}
               {services && (
                 <>
                   <h3 className="font-bold">Sorted By Services</h3>

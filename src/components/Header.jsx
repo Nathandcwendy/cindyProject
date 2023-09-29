@@ -18,44 +18,7 @@ import {
 import { useEffect, useRef, useState, useContext } from "react";
 import Search from "./Search";
 import ThemeContext from "../contexts/ThemeContext";
-
-let services = [
-  "Air And Cabin Filter Replacement",
-  "Air Conditioning",
-  "Auto Detailing",
-  "Auto Engine Diagnostic",
-  "Auto Engine Tuning",
-  "Auto Glass Repair",
-  "Auto Inspection",
-  "Auto Interior Vacuuming",
-  "Auto Maintenance",
-  "Battery",
-  "Body And Trim",
-  "Brakes",
-  "Car Checks",
-  "Car Waxing",
-  "Carburetor Cleaning",
-  "Computer Diagnostic",
-  "Electrical",
-  "Engine Overhaul",
-  "Engine Repair",
-  "Exhaust",
-  "Fuel System",
-  "General Repairs And Maintenance",
-  "Home Services",
-  "Oil Change",
-  "Painting",
-  "Preventative Maintenance",
-  "Steering And Suspension Repair",
-  "Suspension Repair",
-  "Tow Truck",
-  "Transmission",
-  "Tyre Changing",
-  "Tyre Replacement",
-  "Tyre Rotations",
-  "Tyres",
-  "Wheel Alignment",
-];
+import { locations, services } from "../utils/utils";
 
 const Header = () => {
   const { location: locationParam, id: shopName } = useParams();
@@ -238,8 +201,6 @@ const Header = () => {
       sidebarMain.classList.add("slide_out_left");
     }
   };
-
-  const locations = ["Lagos", "Uyo", "Abuja", "Ibadan", "Enugu"];
 
   const capitalizeFirstLetter = (str) => {
     let lowercaseStr = str.toLowerCase();
@@ -807,36 +768,36 @@ const Header = () => {
                     )}
                     {locations.map((item) =>
                       locationParam &&
-                      locationParam.toLowerCase() == item.toLowerCase() ? (
-                        <li key={item}>
+                      locationParam.toLowerCase() == item.name.toLowerCase() ? (
+                        <li key={item.name}>
                           <Link
-                            aria-label={`Visit Repair Shops in ${item}`}
+                            aria-label={`Visit Repair Shops in ${item.name}`}
                             to={
                               checked.current.length
-                                ? `/repairshops/${item.toLowerCase()}?services=${checked.current.join(
-                                    ","
-                                  )}`
-                                : `/repairshops/${item.toLowerCase()}`
+                                ? `/repairshops/${
+                                    item.collectionName
+                                  }?services=${checked.current.join(",")}`
+                                : `/repairshops/${item.collectionName}`
                             }
                             className="flex items-center gap-x-3.5 py-2 px-2.5 text-slate-700 rounded-md bg-gray-100 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-100 dark:hover:text-slate-300"
                           >
-                            {item}
+                            {item.name}
                           </Link>
                         </li>
                       ) : (
-                        <li key={item}>
+                        <li key={item.name}>
                           <Link
-                            aria-label={`Visit Repair Shops in ${item}`}
+                            aria-label={`Visit Repair Shops in ${item.name}`}
                             to={
                               checked.current.length
-                                ? `/repairshops/${item.toLowerCase()}?services=${checked.current.join(
-                                    ","
-                                  )}`
-                                : `/repairshops/${item.toLowerCase()}`
+                                ? `/repairshops/${
+                                    item.collectionName
+                                  }?services=${checked.current.join(",")}`
+                                : `/repairshops/${item.collectionName}`
                             }
                             className="flex items-center gap-x-3.5 py-2 px-2.5 text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-100 dark:hover:text-slate-300"
                           >
-                            {item}
+                            {item.name}
                           </Link>
                         </li>
                       )

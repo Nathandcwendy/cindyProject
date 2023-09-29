@@ -20,7 +20,7 @@ import useFirebase from "../hooks/useFirebase";
 
 const HomePage = () => {
   const [repairShops, setRepairShops] = useState([]);
-  const { data, isLoading, fetchError } = useFirebase("repairShops", null, 10);
+  const { data, isLoading, fetchError } = useFirebase("repairShops", null, 8);
 
   useEffect(() => {
     setRepairShops(data);
@@ -29,15 +29,6 @@ const HomePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  // let count = 5;
-  // let getArray = () => {
-  //   let arr = [];
-  //   for (let i = 0; i < count; i++) {
-  //     arr.push(i);
-  //   }
-  //   return arr;
-  // };
 
   const hasFloat = (number) => {
     return number?.toString().split(".")[1] > 0;

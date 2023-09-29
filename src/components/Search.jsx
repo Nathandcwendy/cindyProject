@@ -21,39 +21,40 @@ function Search({ toggleSearchOverlay }) {
   const navigate = useNavigate();
 
   const reverseGeocode = ({ latitude: lat, longitude: lng }) => {
-    const url = `${geocodeJson}?key=${apiKey}&latlng=${lat},${lng}`;
+    const url = `${geocodeJson}?key=${apiKey}&latlng=${lat},${lng}&result_type=street_address|&result_type=route`;
     fetch(url)
       .then((response) => response.json())
       .then((location) => {
-        const place = location.results[0];
-        // console.log(place);
-        setSearch(place.formatted_address);
-        const onGottenLocation = (place) => {
-          const { geometry } = place;
-          // console.log(geometry);
-          if (!geometry || !geometry.location) {
-            setGetPositionError({
-              code: "custom-1",
-              message: "Location Not Found",
+        if (location.status == "OK") {
+          const place = location.results[0];
+          console.log(location);
+          setSearch(place.formatted_address);
+          const onGottenLocation = (place) => {
+            const { geometry } = place;
+            // console.log(geometry);
+            if (!geometry || !geometry.location) {
+              setGetPositionError("Location Not Found");
+              return;
+            }
+            toggleSearchOverlay();
+            navigate({
+              pathname: "/search",
+              search: createSearchParams({
+                lat: geometry.location.lat,
+                lng: geometry.location.lng,
+                location: place.formatted_address,
+              }).toString(),
             });
-            return;
-          }
-          toggleSearchOverlay();
-          navigate({
-            pathname: "/search",
-            search: createSearchParams({
-              lat: geometry.location.lat,
-              lng: geometry.location.lng,
-              location: place.formatted_address,
-            }).toString(),
-          });
-        };
-        setIsLoading(false);
-        onGottenLocation(place);
-        searchInput.current.classList.remove(
-          "pointer-events-none",
-          "user-select-none"
-        );
+          };
+          setIsLoading(false);
+          onGottenLocation(place);
+          searchInput.current.classList.remove(
+            "pointer-events-none",
+            "user-select-none"
+          );
+        } else {
+          setGetPositionError("Location Not Found");
+        }
       })
       .catch((err) => {
         setGetPositionError(err.message);
@@ -85,7 +86,7 @@ function Search({ toggleSearchOverlay }) {
             "user-select-none"
           );
           if (err.code == 1) {
-            setGetPositionError("Please enable your location");
+            setGetPositionError("Please enable your location and reload");
           } else {
             setGetPositionError(err.message);
           }

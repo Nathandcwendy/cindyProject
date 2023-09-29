@@ -19,6 +19,8 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import useFirebase from "../hooks/useFirebase";
+import { locations } from "../utils/utils";
+
 const HomePage = () => {
   const { location } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,7 +35,7 @@ const HomePage = () => {
     location || "repairShops"
   );
   const [lastDoc, setLastDoc] = useState(null);
-  const shopCount = useRef(2);
+  const shopCount = useRef(8);
 
   const { data, isLoading, fetchError, startDoc, hasNextPage } = useFirebase(
     collectionName,
@@ -48,10 +50,13 @@ const HomePage = () => {
   }, [services, location]);
 
   useEffect(() => {
-    const locations = ["lagos", "uyo", "abuja", "ibadan", "enugu"];
     setLastDoc(null);
     if (location) {
-      if (locations.includes(location.toLocaleLowerCase())) {
+      if (
+        locations.find(
+          (i) => i.collectionName.toLowerCase() == location.toLowerCase()
+        )
+      ) {
         // console.log(location);
         setCollectionName(location);
       } else {
@@ -304,11 +309,6 @@ const HomePage = () => {
     });
   };
 
-  const capitalizeFirstLetter = (str) => {
-    let lowercaseStr = str.toLowerCase();
-    return lowercaseStr[0]?.toUpperCase() + lowercaseStr?.slice(1);
-  };
-
   return (
     <>
       {/* <!-- Content --> */}
@@ -324,7 +324,11 @@ const HomePage = () => {
               {!services && (
                 <h3 className="font-bold">
                   Highly Recommended Repair Shops{" "}
-                  {location ? `In ${capitalizeFirstLetter(location)}` : ``}
+                  {location
+                    ? `In ${
+                        locations.find((i) => i.collectionName == location).name
+                      }`
+                    : ``}
                 </h3>
               )}
               {services && (

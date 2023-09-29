@@ -48,7 +48,6 @@ const useFirebase = (collectionName, start, count, docId, servicesArr) => {
       try {
         const collectionRef = collection(db, collectionName);
         let q;
-
         if (servicesArr?.length) {
           q = getQuery(
             start,
@@ -140,19 +139,17 @@ const useFirebase = (collectionName, start, count, docId, servicesArr) => {
         }
       }
     };
-    if (collectionName && start != "Not Allowed") {
+    if (collectionName && !docId && start != "Not Allowed") {
       collectionQuery(collectionName);
     }
     return () => (isMounted = false);
-  }, [collectionName, start, count, servicesArr]);
+  }, [collectionName, start, count, servicesArr, docId]);
 
   useEffect(() => {
     let isMounted = true;
     const docQuery = async (docId) => {
       let docRef;
-
       docRef = doc(db, "repairShops", docId);
-
       setIsLoading(true);
       setFetchError(null);
       try {
@@ -180,11 +177,18 @@ const useFirebase = (collectionName, start, count, docId, servicesArr) => {
       }
     };
     if (docId) {
-      docQuery(docId);
+      setIsLoading(true);
+      setFetchError(null);
+      if (data.find((i) => i.id == docId)) {
+        setSingleDoc(data.find((i) => i.id == docId));
+        setIsLoading(false);
+      } else {
+        docQuery(docId);
+      }
     }
 
     return () => (isMounted = false);
-  }, [docId]);
+  }, [docId, data]);
 
   return { data, isLoading, fetchError, startDoc, hasNextPage, singleDoc };
 };

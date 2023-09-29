@@ -39,7 +39,9 @@ const useFirebase = (collectionName, start, count, docId, servicesArr) => {
   const lastDoc = useRef(null);
 
   useEffect(() => {
-    setData([]);
+    if (collectionName) {
+      setData([]);
+    }
   }, [collectionName, servicesArr]);
 
   useEffect(() => {
@@ -82,7 +84,6 @@ const useFirebase = (collectionName, start, count, docId, servicesArr) => {
             );
           }
         }
-
         setIsLoading(true);
         setFetchError(null);
         // console.log("GETTING DOCS SNAPSHOTS");
@@ -139,11 +140,11 @@ const useFirebase = (collectionName, start, count, docId, servicesArr) => {
         }
       }
     };
-    if (collectionName && !docId && start != "Not Allowed") {
+    if (collectionName && start != "Not Allowed") {
       collectionQuery(collectionName);
     }
     return () => (isMounted = false);
-  }, [collectionName, start, count, servicesArr, docId]);
+  }, [collectionName, start, count, servicesArr]);
 
   useEffect(() => {
     let isMounted = true;
@@ -179,18 +180,13 @@ const useFirebase = (collectionName, start, count, docId, servicesArr) => {
     if (docId) {
       setIsLoading(true);
       setFetchError(null);
-      if (data.find((i) => i.id == docId)) {
-        setSingleDoc(data.find((i) => i.id == docId));
-        setIsLoading(false);
-      } else {
-        docQuery(docId);
-      }
+      docQuery(docId);
     }
 
     return () => (isMounted = false);
   }, [docId, data]);
 
-  return { data, isLoading, fetchError, startDoc, hasNextPage, singleDoc };
+  return { isLoading, fetchError, startDoc, hasNextPage, singleDoc };
 };
 
 export default useFirebase;

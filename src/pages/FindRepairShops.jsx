@@ -45,6 +45,10 @@ const FindRepairShopsTest = () => {
     }
   }, [setService, service]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behaviour: "smooth" });
+  }, []);
+
   const getNextPage = () => {
     if (!hasNextPage) {
       return;

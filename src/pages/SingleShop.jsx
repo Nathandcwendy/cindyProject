@@ -78,7 +78,7 @@ const SingleShop = () => {
     });
     setStart(lastDoc);
     setDocId(id);
-    setCount(8);
+    setCount(10);
     setServicesArr(searchServices);
   }, [
     id,

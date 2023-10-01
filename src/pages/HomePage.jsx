@@ -10,15 +10,17 @@ import {
   MdLocalPhone,
   MdCheckCircle,
   MdOutlineArticle,
-  MdOutlineHandshake,
+  // MdOutlineHandshake,
   MdErrorOutline,
 } from "react-icons/md";
 import { GiAutoRepair } from "react-icons/gi";
-import { LiaFileInvoiceSolid } from "react-icons/lia";
+// import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { Link } from "react-router-dom";
 // import useFirebase from "../hooks/useFirebase";
 import { useContext } from "react";
 import FirebaseContext from "../contexts/FirebaseContext";
+import BrandName from "../components/BrandName";
+import { HashLink } from "react-router-hash-link";
 
 const HomePage = () => {
   const [repairShops, setRepairShops] = useState([]);
@@ -27,7 +29,7 @@ const HomePage = () => {
   // const { data, isLoading, fetchError } = useFirebase("repairShops", null, 8);
 
   useEffect(() => {
-    data && setRepairShops(data);
+    data && setRepairShops(data.slice(0, 5));
   }, [data]);
 
   useEffect(() => {
@@ -35,9 +37,11 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    setCollectionName("repairShops");
-    setCount(8);
-  }, [setCollectionName, setCount]);
+    if (data.length < 1) {
+      setCollectionName("repairShops");
+      setCount(10);
+    }
+  }, [setCollectionName, setCount, data]);
 
   const hasFloat = (number) => {
     return number?.toString().split(".")[1] > 0;
@@ -195,10 +199,10 @@ const HomePage = () => {
             <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-5xl lg:leading-tight dark:text-white">
               Welcome to{" "}
               <span className="text-blue-600 dark:text-blue-400">
-                Omega Repairs
+                Omega Repairs{" "}
               </span>
             </h1>
-            <p className="mt-3 text-lg text-gray-800 dark:text-gray-400">
+            <p className="mt-3 text-lg text-gray-800 dark:text-white">
               Your trusted source of the latest recommendations and information
               about auto maintenance and repair shops near you.
             </p>
@@ -209,21 +213,7 @@ const HomePage = () => {
                 to={"/?search=true"}
                 className="inline-flex justify-center items-center gap-x-3 text-center bg-blue-600 hover:bg-blue-700 border border-transparent text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white transition py-3 px-4 dark:focus:ring-offset-gray-800"
               >
-                Search for shops near you
-                <svg
-                  className="w-2.5 h-2.5"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                >
-                  <path
-                    d="M5.27921 2L10.9257 7.64645C11.1209 7.84171 11.1209 8.15829 10.9257 8.35355L5.27921 14"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <span>Search for shops near you</span>
               </Link>
             </div>
             {/* <!-- End Buttons --> */}
@@ -300,7 +290,7 @@ const HomePage = () => {
                   </svg>
                 </div>
 
-                <p className="mt-3 text-sm text-gray-800 dark:text-gray-200">
+                <p className="mt-3 text-sm text-gray-800 dark:text-white">
                   <span className="font-bold">4.6</span> /5 - from 12k reviews
                 </p>
 
@@ -418,7 +408,7 @@ const HomePage = () => {
                   </svg>
                 </div>
 
-                <p className="mt-3 text-sm text-gray-800 dark:text-gray-200">
+                <p className="mt-3 text-sm text-gray-800 dark:text-white">
                   <span className="font-bold">4.8</span> /5 - from 5k reviews
                 </p>
 
@@ -451,20 +441,6 @@ const HomePage = () => {
           {/* <!-- End Col --> */}
 
           <div className="relative md:ml-4 flex flex-col h-[400px] sm:h-[530px]">
-            {/* <img
-              alt="silver and gold round accessory"
-              sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
-              srcSet="https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=100&amp;q=60 100w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=200&amp;q=60 200w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=300&amp;q=60 300w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=60 400w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60 500w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=600&amp;q=60 600w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=700&amp;q=60 700w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60 800w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=900&amp;q=60 900w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=60 1000w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1200&amp;q=60 1200w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1400&amp;q=60 1400w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=60 1600w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1800&amp;q=60 1800w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=2000&amp;q=60 2000w"
-              src="https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;w=1000&amp;q=80"
-              itemProp="thumbnailUrl"
-              loading="lazy"
-              className="w-full h-1/2 object-cover"
-              data-test="photo-grid-masonry-img"
-              style={{
-                aspectRatio: 3000 / 4000,
-              }}
-              // style="aspect-ratio: 3000 / 4000;"
-            /> */}
             <img
               src="./backgroundImage.jpg"
               alt=""
@@ -494,58 +470,6 @@ const HomePage = () => {
                 style={{ aspectRatio: 6000 / 4000 }}
               ></img>
             </div>
-            {/* <img
-              alt="person in black jacket holding black smartphone"
-              sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
-              srcSet="https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=100&amp;q=60 100w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=200&amp;q=60 200w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=300&amp;q=60 300w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=60 400w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60 500w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=600&amp;q=60 600w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=700&amp;q=60 700w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60 800w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=900&amp;q=60 900w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=60 1000w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1200&amp;q=60 1200w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1400&amp;q=60 1400w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=60 1600w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1800&amp;q=60 1800w, https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=2000&amp;q=60 2000w"
-              src="https://images.unsplash.com/photo-1613214149922-f1809c99b414?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;w=1000&amp;q=80"
-              itemProp="thumbnailUrl"
-              loading="lazy"
-              className="absolute top-1/2 transform -translate-y-1/2 w-3/5 left-1/2 -translate-x-1/2 rounded-md opacity-60"
-              data-test="photo-grid-masonry-img"
-              style={{ aspectRatio: 6000 / 4000 }}
-            /> */}
-            {/* <div className="w-full rounded-md overflow-hidden flex">
-              <div className="w-1/2">
-                <img
-                  alt="silver and gold round accessory"
-                  sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
-                  srcSet="https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=100&amp;q=60 100w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=200&amp;q=60 200w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=300&amp;q=60 300w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=60 400w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60 500w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=600&amp;q=60 600w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=700&amp;q=60 700w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60 800w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=900&amp;q=60 900w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=60 1000w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1200&amp;q=60 1200w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1400&amp;q=60 1400w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=60 1600w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1800&amp;q=60 1800w, https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=2000&amp;q=60 2000w"
-                  src="https://images.unsplash.com/photo-1606337321936-02d1b1a4d5ef?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;w=1000&amp;q=80"
-                  itemProp="thumbnailUrl"
-                  loading="lazy"
-                  className="w-full"
-                  data-test="photo-grid-masonry-img"
-                  style={{ aspectRatio: 3000 / 4000 }}
-                  // style="aspect-ratio: 3000 / 4000;"
-                ></img>
-              </div>
-
-              <div className="w-1/2 flex flex-col">
-                <img
-                  alt="man refilling motor oil on car engine bay"
-                  sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
-                  srcSet="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=100&amp;q=60 100w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=200&amp;q=60 200w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=300&amp;q=60 300w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=60 400w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60 500w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=600&amp;q=60 600w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=700&amp;q=60 700w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60 800w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=900&amp;q=60 900w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=60 1000w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1200&amp;q=60 1200w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1400&amp;q=60 1400w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=60 1600w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=1800&amp;q=60 1800w, https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;auto=format&amp;fit=crop&amp;w=2000&amp;q=60 2000w"
-                  src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1lY2hhbmljfGVufDB8fDB8fHww&amp;w=1000&amp;q=80"
-                  itemProp="thumbnailUrl"
-                  loading="lazy"
-                  className="w-full"
-                  data-test="photo-grid-masonry-img"
-                  style={{ aspectRatio: 7200 / 4800 }}
-                ></img>
-                <img
-                  alt="Pleased automotive technician removing protective cover from car engine and looking at its parts"
-                  sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
-                  srcSet="https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=100&amp;q=60 100w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=200&amp;q=60 200w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=300&amp;q=60 300w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=60 400w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60 500w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=600&amp;q=60 600w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=700&amp;q=60 700w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60 800w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=900&amp;q=60 900w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=60 1000w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=1200&amp;q=60 1200w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=1400&amp;q=60 1400w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=1600&amp;q=60 1600w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=1800&amp;q=60 1800w, https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;auto=format&amp;fit=crop&amp;w=2000&amp;q=60 2000w"
-                  src="https://plus.unsplash.com/premium_photo-1661767441726-a5140d5a11e8?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&amp;w=1000&amp;q=80"
-                  itemProp="thumbnailUrl"
-                  loading="lazy"
-                  className="w-full"
-                  data-test="photo-grid-masonry-img"
-                  style={{ aspectRatio: 6000 / 4000 }}
-                ></img>
-              </div>
-            </div> */}
 
             <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 mr-4 -ml-4 lg:mt-6 lg:-mb-6 lg:mr-6 lg:-ml-6 dark:from-slate-800 dark:via-slate-900/0 dark:to-slate-900/0"></div>
 
@@ -675,9 +599,274 @@ const HomePage = () => {
         {/* <!-- End Grid --> */}
       </div>
       {/* <!-- End Hero --> */}
+      {/* <----- About Us -----> */}
+      <section
+        id="aboutUs"
+        className="pt-10 lg:py-14 mx-auto flex flex-col gap-12 lg:gap-16"
+      >
+        <div className="flex flex-col gap-2">
+          <strong className="flex justify-start text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl lg:leading-tight dark:text-white">
+            Are you in need of quick and reliable car repair services?
+          </strong>
+          <strong className="block text-lg font-bold text-gray-800 sm:text-xl lg:text-2xl lg:leading-tight dark:text-white">
+            Look no further! <BrandName /> is here to assist you in finding the
+            nearest and most reputable car repair shops in your area.
+          </strong>
+        </div>
+        <article id="ourMission" className="flex flex-col gap-2">
+          <h3 className="text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl lg:leading-tight dark:text-white">
+            Our Mission
+          </h3>
+          <p className="text-lg text-gray-800 dark:text-white">
+            At <BrandName />, our mission is simple yet essential: to make your
+            car repair journey hassle-free. We understand that vehicle issues
+            can arise unexpectedly, leaving you in a bind. That{"'"}s why we
+            {"'"}ve created a powerful tool that helps you locate the closest
+            and most qualified car repair experts with ease.
+          </p>
+        </article>
+        <article id="howItWorks" className="flex flex-col gap-2">
+          <h3 className="text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl lg:leading-tight dark:text-white">
+            How It Works
+          </h3>
+          <p className="text-lg text-gray-800 dark:text-white">
+            Using our user-friendly website, you can effortlessly find the ideal
+            car repair shop near you
+          </p>
+          <ol className="mt-4 pl-2 lg:pl-4 flex flex-col gap-3">
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className: "w-5 h-5",
+                  }}
+                >
+                  <GiAutoRepair />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  Location Detection
+                </strong>
+              </div>
+              <p className="pl-7">
+                Enable geolocation services or manually enter your location.
+              </p>
+              {/* <!-- Buttons --> */}
+              <div className=" mt-1 grid gap-1 w-full sm:inline-flex pl-7">
+                <Link
+                  to={"/?search=true"}
+                  className="inline-flex justify-center items-center gap-x-3 text-center bg-blue-600 hover:bg-blue-700 border border-transparent text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white transition py-2 px-4 dark:focus:ring-offset-gray-800"
+                >
+                  <span>Search for shops near you</span>
+                </Link>
+              </div>
+              {/* <!-- End Buttons --> */}
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className: "w-5 h-5",
+                  }}
+                >
+                  <GiAutoRepair />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  Comprehensive Information
+                </strong>
+              </div>
+              <p className="pl-7">
+                Explore each shop{"'"}s details, including contact information,
+                services offered, user ratings, and more.
+              </p>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className: "w-5 h-5",
+                  }}
+                >
+                  <GiAutoRepair />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  Instant Results
+                </strong>
+              </div>
+              <p className="pl-7">
+                Receive a list of nearby car repair shops ranked by proximity.
+              </p>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className: "w-5 h-5",
+                  }}
+                >
+                  <GiAutoRepair />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  User Reviews
+                </strong>
+              </div>
+              <p className="pl-7">
+                Benefit from the experiences of others by reading user reviews
+                and ratings.
+              </p>
+            </li>
+          </ol>
+        </article>
+        <article id="whyChooseUs" className="flex flex-col gap-2">
+          <h3 className="text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl lg:leading-tight dark:text-white">
+            Why Choose Us
+          </h3>
+          <ul className="mt-4 pl-2 flex flex-col gap-2">
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className:
+                      "w-5 h-5 text-customGreen-100 dark:text-green-400",
+                  }}
+                >
+                  <MdCheckCircle />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  Accuracy
+                </strong>
+              </div>
+              <p className="pl-7">
+                Our advanced algorithm ensures precise results based on your
+                location.
+              </p>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className:
+                      "w-5 h-5 text-customGreen-100 dark:text-green-400",
+                  }}
+                >
+                  <MdCheckCircle />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  Convenience
+                </strong>
+              </div>
+              <p className="pl-7">
+                Save time and effort by quickly identifying the closest repair
+                options.
+              </p>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className:
+                      "w-5 h-5 text-customGreen-100 dark:text-green-400",
+                  }}
+                >
+                  <MdCheckCircle />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  Transparency
+                </strong>
+              </div>
+              <p className="pl-7">
+                Access valuable information about each shop, including opening
+                hours, services they can offer and customer feedback.
+              </p>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <IconContext.Provider
+                  value={{
+                    className:
+                      "w-5 h-5 text-customGreen-100 dark:text-green-400",
+                  }}
+                >
+                  <MdCheckCircle />
+                </IconContext.Provider>
+                <strong className="text-xl font-semibold text-gray-800 sm:text-2xl lg:text-3xl lg:leading-tight dark:text-white">
+                  Peace of Mind
+                </strong>
+              </div>
+              <p className="pl-7">
+                Make informed decisions and entrust your vehicle to skilled
+                professionals.
+              </p>
+            </li>
+          </ul>
+        </article>
+        <article className="flex flex-col gap-2">
+          <h3 className="text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl lg:leading-tight dark:text-white">
+            Your Trusted Resource for Car Repairs
+          </h3>
+          <p className="text-lg text-gray-800 dark:text-white">
+            Whether it{"'"}s a routine maintenance check, a minor repair, or a
+            major overhaul, <BrandName /> is your go-to destination for all your
+            automotive needs. We{"'"}re committed to providing you with the
+            tools and information necessary to keep your vehicle in top-notch
+            condition. Join the thousands of satisfied users who rely on{" "}
+            <BrandName /> to find the best car repair solutions. Let us help you
+            get back on the road with confidence!
+          </p>
+        </article>
+        <article
+          id="discoverOurRecommendations"
+          className="flex flex-col gap-2"
+        >
+          <h3 className="text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl lg:leading-tight dark:text-white">
+            Discover Our Expert Recommendations
+          </h3>
+          <p className="text-lg text-gray-800 dark:text-white">
+            Looking for trusted car repair shops but not sure where to start?{" "}
+            <BrandName /> has you covered! In addition to finding nearby
+            options, we also provide expert recommendations from our carefully
+            curated database of top-notch car repair centers.
+          </p>
+          <div className="mt-1 grid gap-3 w-full sm:inline-flex">
+            <Link
+              to={"/repairshops"}
+              className="inline-flex justify-center items-center gap-x-3 text-center bg-blue-600 hover:bg-blue-700 border border-transparent text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white transition py-3 px-4 dark:focus:ring-offset-gray-800"
+            >
+              <span>See Our Recommendations</span>
+            </Link>
+          </div>
+          <p className="text-lg text-gray-800 dark:text-white">
+            Discover recommended car repair shops in top cities in Nigeria and
+            embark on a seamless automotive experience with <BrandName />!
+          </p>
+        </article>
+        <article id="startYourJourney" className="flex flex-col gap-2">
+          <h3 className="text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl lg:leading-tight dark:text-white">
+            Start Your Journey
+          </h3>
+          <p className="text-lg text-gray-800 dark:text-white">
+            Experience the convenience and reliability of <BrandName /> today.
+            Simply enter your location, and let us guide you to the nearest car
+            repair shop. Your vehicle deserves the best care, and we{"'"}re here
+            to ensure you receive it.{" "}
+          </p>
+          <div className="mt-1 grid gap-3 w-full sm:inline-flex">
+            <Link
+              to={"/?search=true"}
+              className="inline-flex justify-center items-center gap-x-3 text-center bg-blue-600 hover:bg-blue-700 border border-transparent text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white transition py-3 px-4 dark:focus:ring-offset-gray-800"
+            >
+              <span>Search for shops near you</span>
+            </Link>
+          </div>
+          <p className="text-lg text-gray-800 dark:text-white">
+            Discover the closest car repair shops near you and embark on a
+            seamless automotive experience with <BrandName />!
+          </p>
+        </article>
+      </section>
+      {/* <----- About Us -----> */}
       {/* <!-- Icon Blocks --> */}
       <div className="max-w-[85rem] py-10 lg:py-14 mx-auto">
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 items-center gap-6 md:gap-10">
+        <div className="grid sm:grid-cols-2 items-center gap-6 md:gap-10">
           {/* <!-- Card --> */}
           <Link to={"/repairshops"}>
             <div className="w-full h-full max-h-[350px] bg-white shadow-custom-1 rounded-lg p-5 dark:bg-slate-900 overflow-y-hidden">
@@ -690,12 +879,12 @@ const HomePage = () => {
                   </IconContext.Provider>
                 </div>
                 <div className="flex-shrink-0">
-                  <h2 className="block text-xl font-bold font-roboto text-gray-800 dark:text-white">
+                  <h2 className="block text-xl font-bold font-roboto text-gray-800 dark:text-white tracking-wide">
                     Repair Shops
                   </h2>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-gray-600 dark:text-white mb-4">
                 See our collection of repair shops across Nigeria. They can be
                 sorted based on popular cities. You can also search for the one
                 closest to you just by typing in your location.
@@ -705,7 +894,7 @@ const HomePage = () => {
           {/* <!-- End Card --> */}
 
           {/* <!-- Card --> */}
-          <div className="w-full h-full bg-white shadow-custom-1 rounded-lg p-5 dark:bg-slate-900">
+          {/* <div className="w-full h-full bg-white shadow-custom-1 rounded-lg p-5 dark:bg-slate-900">
             <div className="flex items-center gap-x-4 mb-3">
               <div className="inline-flex justify-center items-center w-[62px] h-[62px] rounded-full border-4 border-blue-50 bg-blue-100 dark:border-blue-900 dark:bg-blue-800">
                 <IconContext.Provider
@@ -725,11 +914,11 @@ const HomePage = () => {
               We will direct your requet to the most ideal repair shop, keeping
               the proximity to your location in mind.
             </p>
-          </div>
+          </div> */}
           {/* <!-- End Card --> */}
 
           {/* <!-- Card --> */}
-          <div className="w-full h-full bg-white shadow-custom-1 rounded-lg p-5 dark:bg-slate-900">
+          {/* <div className="w-full h-full bg-white shadow-custom-1 rounded-lg p-5 dark:bg-slate-900">
             <div className="flex items-center gap-x-4 mb-3">
               <div className="inline-flex justify-center items-center w-[62px] h-[62px] rounded-full border-4 border-blue-50 bg-blue-100 dark:border-blue-900 dark:bg-blue-800">
                 <IconContext.Provider
@@ -750,11 +939,21 @@ const HomePage = () => {
               Request an audit and we will arrange for a meeting to check out
               your workshop.
             </p>
-          </div>
+          </div> */}
           {/* <!-- End Card --> */}
 
           {/* <!-- Card --> */}
-          <div className="w-full h-full bg-white shadow-custom-1 rounded-lg p-5 dark:bg-slate-900 xl:col-span-3">
+          <HashLink
+            to="#subscribe"
+            scroll={(el) =>
+              el.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+                inline: "nearest",
+              })
+            }
+            className="w-full h-full bg-white shadow-custom-1 rounded-lg p-5 dark:bg-slate-900"
+          >
             <div className="flex items-center gap-x-4 mb-3">
               <div className="inline-flex justify-center items-center w-[62px] h-[62px] rounded-full border-4 border-blue-50 bg-blue-100 dark:border-blue-900 dark:bg-blue-800">
                 <IconContext.Provider
@@ -764,17 +963,17 @@ const HomePage = () => {
                 </IconContext.Provider>
               </div>
               <div className="flex-shrink-0">
-                <h2 className="block text-xl font-bold font-roboto text-gray-800 dark:text-white">
-                  Read Articles
+                <h2 className="block text-xl font-bold font-roboto text-gray-800 dark:text-white tracking-wide">
+                  Subscribe For Articles
                 </h2>
               </div>
             </div>
-            <p className="text-gray-60 dark:text-gray-400">
+            <p className="text-gray-60 dark:text-white">
               Our writers give the best tips and tricks for maintaining your
               vehicle. They gather information from experienced mechanics and
               vehicle owners on how best to take care of various vehicles.
             </p>
-          </div>
+          </HashLink>
           {/* <!-- End Card --> */}
         </div>
       </div>

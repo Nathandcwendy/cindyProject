@@ -17,6 +17,7 @@ function Search({ toggleSearchOverlay }) {
   const [networkStatus, setNetwrokStatus] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [tooltip, setTooltip] = useState(true);
   const searchInput = useRef(null);
   const navigate = useNavigate();
 
@@ -62,6 +63,7 @@ function Search({ toggleSearchOverlay }) {
   };
 
   const findMyLocation = () => {
+    setTooltip(false);
     setGetPositionError(null);
     if (navigator.geolocation) {
       setIsLoading(true);
@@ -86,7 +88,9 @@ function Search({ toggleSearchOverlay }) {
             "user-select-none"
           );
           if (err.code == 1) {
-            setGetPositionError("Please enable your location and reload");
+            setGetPositionError(
+              "Please enable your location and reload or type any location in the search box"
+            );
           } else {
             setGetPositionError(err.message);
           }
@@ -187,8 +191,8 @@ function Search({ toggleSearchOverlay }) {
   }, []);
 
   return (
-    <div className="absolute top-20 sm:top-32 w-[95%] sm:w-auto rounded-lg shadow-sm shadow-gray-200 dark:shadow-gray-700 flex flex-col bg-white dark:bg-gray-800 dark:border-gray-700 z-20 overflow-y-auto overscroll-none text-gray-900 dark:text-gray-300">
-      <div className="flex sticky flex-col items-center justify-center top-0 bg-white dark:bg-gray-800 dark:border-gray-700 p-3 md:p-5 border-b-2 shadow-md gap-4">
+    <div className="absolute top-20 sm:top-32 w-[95%] sm:w-auto rounded-lg shadow-sm shadow-gray-200 dark:shadow-gray-700 flex flex-col bg-white dark:bg-gray-800 dark:border-gray-700 z-20 overflow-y-visible overscroll-none text-gray-900 dark:text-gray-300">
+      <div className="flex sticky flex-col items-center justify-center top-0 bg-white dark:bg-gray-800 dark:border-gray-700 p-3 pt-5 md:p-5 border-b-2 shadow-md gap-4">
         <div className="relative w-full sm:w-[34rem] lg:w-[36rem] rounded-md">
           <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none z-20 pl-2 sm:pl-4">
             <svg
@@ -223,6 +227,12 @@ function Search({ toggleSearchOverlay }) {
                 <MdGpsFixed />
               </IconContext.Provider>
             </button>
+            {tooltip && (
+              <div className="absolute w-max p-1 px-4 bg-gray-300 dark:bg-gray-900 -top-3 md:-top-2 -right-2 sm:right-0 -translate-y-1/2 rounded-xl font-semibold">
+                <span>Use My Location</span>
+                <div className="absolute border-8 border-y-transparent dark:border-y-transparent border-r-transparent dark:border-r-transparent border-gray-300 dark:border-gray-900 rotate-90 translate-y-1 right-[18px]" />
+              </div>
+            )}
           </div>
         </div>
       </div>

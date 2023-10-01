@@ -33,7 +33,7 @@ const HomePage = () => {
   const [searchServices, setSearchServices] = useState(
     services?.split(",") || null
   );
-  const shopCount = useRef(8);
+  const shopCount = useRef(10);
 
   const {
     data,

@@ -1,6 +1,36 @@
+import { useEffect, useRef, useState } from "react";
+import { MdCheckCircle } from "react-icons/md";
+import { IconContext } from "react-icons/lib";
+import { useLocation } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
+import { Link } from "react-router-dom";
+
 const Footer = () => {
+  const location = useLocation();
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubscribed(true);
+    setEmail("");
+    setTimeout(() => {
+      setSubscribed(false);
+    }, 5000);
+  };
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (location.hash == "#subscribe" && !subscribed) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 500);
+    }
+  }, [location, subscribed]);
   return (
-    <footer className="font-roboto w-full p-4 relative bottom-0 flex items-center justify-center bg-gray-900 z-30 px-4 sm:px-6 md:px-8 lg:pl-72">
+    <footer
+      id="footer"
+      className="font-roboto w-full p-4 relative bottom-0 flex items-center justify-center bg-gray-900 z-30 px-4 sm:px-6 md:px-8 lg:pl-72"
+    >
       <div className="max-w-[85rem] w-full py-4 sm:px-2 lg:px-4 mx-auto">
         {/* <!-- Grid --> */}
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -20,14 +50,14 @@ const Footer = () => {
 
             <div className="mt-3 grid space-y-3">
               <p>
-                <a
+                <Link
+                  to={"/repairshops"}
                   className="inline-flex gap-x-2 text-gray-400 hover:text-gray-200"
-                  href="#"
                 >
                   Repair Shops
-                </a>
+                </Link>
               </p>
-              <p>
+              {/* <p>
                 <a
                   className="inline-flex gap-x-2 text-gray-400 hover:text-gray-200"
                   href="#"
@@ -42,14 +72,15 @@ const Footer = () => {
                 >
                   Audit
                 </a>
-              </p>
+              </p> */}
+
               <p>
-                <a
+                <Link
+                  to={"/?search=true"}
                   className="inline-flex gap-x-2 text-gray-400 hover:text-gray-200"
-                  href="#"
                 >
                   Shops Near You
-                </a>
+                </Link>
               </p>
             </div>
           </div>
@@ -60,12 +91,19 @@ const Footer = () => {
 
             <div className="mt-3 grid space-y-3">
               <p>
-                <a
+                <HashLink
+                  to={"/#aboutUs"}
                   className="inline-flex gap-x-2 text-gray-400 hover:text-gray-200"
-                  href="#"
+                  scroll={(el) =>
+                    el.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                      inline: "nearest",
+                    })
+                  }
                 >
                   About us
-                </a>
+                </HashLink>
               </p>
               <p>
                 <a
@@ -97,36 +135,63 @@ const Footer = () => {
             </div>
           </div>
           {/* <!-- End Col --> */}
-
-          <div className="col-span-2">
-            <h4 className="font-semibold text-gray-100">Stay up to date</h4>
-
-            <form>
-              <div className="mt-4 flex flex-col items-center gap-2 sm:flex-row sm:gap-3 bg-white rounded-md p-2">
-                <div className="w-full">
-                  <label htmlFor="hero-input" className="sr-only">
-                    Search
-                  </label>
-                  <input
-                    type="text"
-                    id="hero-input"
-                    name="hero-input"
-                    className="py-3 px-4 block w-full border-transparent shadow-sm rounded-md focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Enter your email"
+          <div id="subscribe" className="col-span-2">
+            {!subscribed && (
+              <div>
+                <h4 className="font-semibold text-gray-100">Stay up to date</h4>
+                <form onSubmit={handleSubmit}>
+                  <div className="mt-4 flex flex-col items-center gap-2 sm:flex-row sm:gap-3 bg-white rounded-md p-2 relative">
+                    <div className="w-full">
+                      <label htmlFor="hero-input" className="sr-only">
+                        Subscribe
+                      </label>
+                      <input
+                        ref={inputRef}
+                        type="email"
+                        id="hero-input"
+                        name="hero-input"
+                        className="py-2 px-2 block w-full border-transparent shadow-sm rounded-md focus:z-10 focus:border-blue-500 focus:ring-blue-500 text-black"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <button className="w-full sm:w-auto whitespace-nowrap inline-flex justify-center items-center gap-x-3 text-center bg-blue-600 hover:bg-blue-700 border border-transparent text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white transition py-2 px-2">
+                      Subscribe
+                    </button>
+                  </div>
+                  <p className="mt-3 text-sm text-gray-400">
+                    New recommendations and auto maintenance tips. Never Spam.
+                  </p>
+                </form>
+              </div>
+            )}
+            {subscribed && (
+              <div className="inset-0 h-[150px] -right-[1px] flex justify-center p-2 bg-gray-900">
+                <div className="flex gap-4 relative top-1/2 -translate-y-1/2 h-max ml-5">
+                  <strong className="text-base xs:text-lg sm:text-2xl text-gray-400">
+                    Subscribed
+                  </strong>
+                  <IconContext.Provider
+                    value={{
+                      className:
+                        "w-4 h-4 xs:w-5 sm:w-8 xs:h-5 sm:h-8 text-green-400 translate-y-1 sm:translate-y-0",
+                    }}
+                  >
+                    <MdCheckCircle />
+                  </IconContext.Provider>
+                </div>
+                <div className="w-1/2 max-w-[200px] sm:flex-1">
+                  <img
+                    src="./subscriber.svg"
+                    alt="Subscriber"
+                    className="object-contain"
                   />
                 </div>
-                <a
-                  className="w-full sm:w-auto whitespace-nowrap inline-flex justify-center items-center gap-x-3 text-center bg-blue-600 hover:bg-blue-700 border border-transparent text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white transition py-3 px-4"
-                  href="#"
-                >
-                  Subscribe
-                </a>
               </div>
-              <p className="mt-3 text-sm text-gray-400">
-                New recommendations and auto maintenance tips. Never Spam.
-              </p>
-            </form>
+            )}
           </div>
+
           {/* <!-- End Col --> */}
         </div>
         {/* <!-- End Grid --> */}

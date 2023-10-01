@@ -32,6 +32,7 @@ module.exports = {
         gray: colors.slate,
         "customGreen": { 100: "rgb(0, 120, 0)" },
         "customRed": { 100: "rgb(255, 88, 88)" },
+        "semi-transparent": "rgba(21, 14, 40, 0.93)",
       },
       screens: {
         xs: "375px",

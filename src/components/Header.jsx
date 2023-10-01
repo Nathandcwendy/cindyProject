@@ -1,10 +1,11 @@
 import { AiOutlineClose, AiOutlineRight } from "react-icons/ai";
-import { LiaFileInvoiceSolid } from "react-icons/lia";
+// import { LiaFileInvoiceSolid } from "react-icons/lia";
 import {
   MdOutlineSort,
   MdOutlineDescription,
   MdMap,
   MdContactMail,
+  MdOutlineContactMail,
 } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import {
@@ -16,6 +17,7 @@ import {
   // createSearchParams,
 } from "react-router-dom";
 import { useEffect, useRef, useState, useContext } from "react";
+import { HashLink } from "react-router-hash-link";
 import Search from "./Search";
 import ThemeContext from "../contexts/ThemeContext";
 import { locations, services } from "../utils/utils";
@@ -384,9 +386,15 @@ const Header = () => {
                 </svg>
                 <span>Home</span>
               </Link>
-
-              <Link
-                to={"/about"}
+              <HashLink
+                to="/#aboutUs"
+                scroll={(el) =>
+                  el.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "nearest",
+                  })
+                }
                 className="flex items-center gap-x-3.5 p-1 text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300"
               >
                 <svg
@@ -400,13 +408,41 @@ const Header = () => {
                   <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z" />
                 </svg>
                 <span>About</span>
-              </Link>
-
-              <Link
-                to={"/getQuote"}
-                className="hs-accordion-toggle flex items-center gap-x-3.5 p-1 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
+              </HashLink>
+              {/* <a
+                href={"/#about"}
+                className="flex items-center gap-x-3.5 p-1 text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300"
               >
                 <svg
+                  className="w-3.5 h-3.5 hidden sm:inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z" />
+                </svg>
+                <span>About</span>
+              </a> */}
+
+              <HashLink
+                to="#subscribe"
+                scroll={(el) =>
+                  el.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "nearest",
+                  })
+                }
+                className="hs-accordion-toggle flex items-center gap-x-3.5 p-1 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
+              >
+                <IconContext.Provider
+                  value={{ className: "w-3.5 h-3.5 hidden sm:inline" }}
+                >
+                  <MdOutlineContactMail />
+                </IconContext.Provider>
+                {/* <svg
                   className="w-3.5 h-3.5 hidden sm:inline"
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -419,9 +455,9 @@ const Header = () => {
                     fillRule="evenodd"
                     d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
                   />
-                </svg>
-                <span>Quote</span>
-              </Link>
+                </svg> */}
+                <span>Subscribe</span>
+              </HashLink>
 
               {/* <button
                 type="button"
@@ -908,18 +944,25 @@ const Header = () => {
               </li>
 
               <li>
-                <a
+                <HashLink
                   className="flex items-center gap-x-3.5 py-2 px-2.5  text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-white dark:hover:text-slate-300"
-                  href="#about"
+                  to="/#aboutUs"
+                  scroll={(el) =>
+                    el.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                      inline: "nearest",
+                    })
+                  }
                 >
                   <IconContext.Provider value={{ className: "w-5 h-5" }}>
                     <MdOutlineDescription />
                   </IconContext.Provider>
                   <span>About Us</span>
-                </a>
+                </HashLink>
               </li>
 
-              <li>
+              {/* <li>
                 <a
                   className="flex items-center gap-x-3.5 py-2 px-2.5  text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-white dark:hover:text-slate-300"
                   href="#contact"
@@ -929,17 +972,24 @@ const Header = () => {
                   </IconContext.Provider>
                   <span>Contact Us</span>
                 </a>
-              </li>
+              </li> */}
               <li>
-                <a
+                <HashLink
                   className="flex items-center gap-x-3.5 py-2 px-2.5  text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-white dark:hover:text-slate-300"
-                  href="#"
+                  to="#subscribe"
+                  scroll={(el) =>
+                    el.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                      inline: "nearest",
+                    })
+                  }
                 >
                   <IconContext.Provider value={{ className: "w-5 h-5" }}>
-                    <LiaFileInvoiceSolid />
+                    <MdContactMail />
                   </IconContext.Provider>
-                  <span>Get Quote</span>
-                </a>
+                  <span>Subscribe</span>
+                </HashLink>
               </li>
             </ul>
           </nav>

@@ -18,8 +18,10 @@ import {
   Link,
   useSearchParams,
 } from "react-router-dom";
-import useFirebase from "../hooks/useFirebase";
+// import useFirebase from "../hooks/useFirebase";
 import { locations } from "../utils/utils";
+import { useContext } from "react";
+import FirebaseContext from "../contexts/FirebaseContext";
 
 const HomePage = () => {
   const { location } = useParams();
@@ -31,46 +33,79 @@ const HomePage = () => {
   const [searchServices, setSearchServices] = useState(
     services?.split(",") || null
   );
-  const [collectionName, setCollectionName] = useState(
-    location || "repairShops"
-  );
-  const [lastDoc, setLastDoc] = useState(null);
   const shopCount = useRef(8);
 
-  const { data, isLoading, fetchError, startDoc, hasNextPage } = useFirebase(
-    collectionName,
-    lastDoc,
-    shopCount.current,
-    null,
-    searchServices
+  const {
+    data,
+    isLoading,
+    fetchError,
+    startDoc,
+    hasNextPage,
+    setCollectionName: setCollection,
+    setStart,
+    setCount,
+    setServicesArr,
+    setDocId,
+  } = useContext(FirebaseContext);
+
+  // This prevents unnecessary database calls when route changes
+  const [lastDoc, setLastDoc] = useState(
+    data?.length <= 0 ? null : "Not Allowed"
   );
+
+  useEffect(() => {
+    setCollection(() => {
+      if (location) {
+        if (
+          locations.find(
+            (i) => i.collectionName.toLowerCase() == location.toLowerCase()
+          )
+        ) {
+          return location;
+        } else {
+          return "";
+        }
+      } else {
+        return "repairShops";
+      }
+    });
+    setStart(lastDoc);
+    setCount(shopCount.current);
+    setDocId(null);
+    setServicesArr(searchServices);
+  }, [
+    lastDoc,
+    searchServices,
+    setCollection,
+    setCount,
+    setServicesArr,
+    setStart,
+    setDocId,
+    location,
+  ]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [services, location]);
 
+  // Set LastDoc to allow for Loading More Shops
   useEffect(() => {
-    setLastDoc(null);
-    if (location) {
-      if (
-        locations.find(
-          (i) => i.collectionName.toLowerCase() == location.toLowerCase()
-        )
-      ) {
-        // console.log(location);
-        setCollectionName(location);
-      } else {
-        navigate("/missing");
-      }
-    } else {
-      setCollectionName("repairShops");
-    }
+    services && data.length < 1 && setLastDoc(null);
+    !services && data.length < 1 && setLastDoc(null);
+  }, [services, data]);
+
+  useEffect(() => {
+    location &&
+      !locations.find(
+        (i) => i.collectionName.toLowerCase() == location.toLowerCase()
+      ) &&
+      navigate("/missing");
     if (services == searchServices?.join(",")) {
       return;
     } else {
       setSearchServices(services?.split(","));
     }
-  }, [location, navigate, collectionName, services, searchServices]);
+  }, [location, navigate, services, searchServices]);
 
   useEffect(() => {
     setRepairShops(data);
@@ -81,10 +116,6 @@ const HomePage = () => {
   useEffect(() => {
     fetchError && setLastDoc("Not Allowed");
   }, [fetchError]);
-
-  // useEffect(() => {
-  //   fetchError && repairShops.length < 1 && navigate("/missing");
-  // }, [fetchError, repairShops, navigate]);
 
   const hasFloat = (number) => {
     return number?.toString().split(".")[1] > 0;
@@ -324,7 +355,8 @@ const HomePage = () => {
               {!services && (
                 <h3 className="font-bold">
                   Highly Recommended Repair Shops{" "}
-                  {location
+                  {location &&
+                  locations.find((i) => i.collectionName == location)
                     ? `In ${
                         locations.find((i) => i.collectionName == location).name
                       }`
@@ -332,18 +364,25 @@ const HomePage = () => {
                 </h3>
               )}
               {services && (
-                <>
+                <div className="flex sm:flex-row flex-col gap-2">
+                  {/* <h3 className="font-bold">Sorted By Services</h3> */}
                   <h3 className="font-bold inline whitespace-nowrap">
+                    Shops{" "}
+                    {location &&
+                      locations.find((i) => i.collectionName == location) &&
+                      `In ${
+                        locations.find((i) => i.collectionName == location).name
+                      } `}
                     Sorted By Services
                   </h3>
                   <button
                     aria-label="Reset Sorting"
                     onClick={handleReset}
-                    className="p-1 px-2 bg-yellow-700 tracking-wider text-white rounded-lg ring-2 ring-yellow-500/50 text-xs shadow-custom-1 transition-all whitespace-nowrap"
+                    className="p-1 px-2 bg-yellow-600 tracking-wider text-white rounded-lg ring-2 ring-yellow-500/50 text-xs shadow-custom-1 transition-all sm:w-auto w-max whitespace-nowrap"
                   >
                     Reset Sorting
                   </button>
-                </>
+                </div>
               )}
             </div>
             {services && (

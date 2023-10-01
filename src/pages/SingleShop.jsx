@@ -18,8 +18,10 @@ import {
 } from "react-icons/md";
 import { GiAutoRepair } from "react-icons/gi";
 import { IconContext } from "react-icons/lib";
-import useFirebase from "../hooks/useFirebase";
+// import useFirebase from "../hooks/useFirebase";
 import { locations } from "../utils/utils";
+import { useContext } from "react";
+import FirebaseContext from "../contexts/FirebaseContext";
 
 const SingleShop = () => {
   const { location: locationParams } = useParams();
@@ -29,32 +31,70 @@ const SingleShop = () => {
   const navigate = useNavigate();
   const [repairShops, setRepairShops] = useState([]);
   const [doc, setDoc] = useState(null);
-  const [lastDoc, setLastDoc] = useState(null);
-  const [location, setLocation] = useState(locationParams || null);
+
   const [searchServices, setSearchServices] = useState(
     services?.split(",") || null
   );
   const [networkStatus, setNetwrokStatus] = useState(true);
 
-  const { isLoading, fetchError, singleDoc } = useFirebase(
-    "repairShops",
-    null,
-    null,
-    id
+  const {
+    data,
+    startDoc,
+    isLoading,
+    docIsLoading,
+    fetchError,
+    docFetchError,
+    hasNextPage,
+    singleDoc,
+    setCollectionName,
+    setStart,
+    setCount,
+    setDocId,
+    setServicesArr,
+  } = useContext(FirebaseContext);
+
+  // This prevents unnecessary database calls when route changes
+  const [lastDoc, setLastDoc] = useState(
+    data?.length <= 0 ? null : "Not Allowed"
   );
 
-  const {
-    data: secondaryData,
-    startDoc,
-    isLoading: secondaryIsLoading,
-    fetchError: secondaryFetchError,
-    hasNextPage,
-  } = useFirebase(location, lastDoc, 8, null, searchServices);
+  useEffect(() => {
+    setCollectionName(() => {
+      if (locationParams) {
+        if (
+          locations.find(
+            (i) =>
+              i.collectionName.toLowerCase() ==
+              locationParams.toLocaleLowerCase()
+          )
+        ) {
+          return locationParams;
+        } else {
+          return "";
+        }
+      } else {
+        return "repairShops";
+      }
+    });
+    setStart(lastDoc);
+    setDocId(id);
+    setCount(8);
+    setServicesArr(searchServices);
+  }, [
+    id,
+    lastDoc,
+    searchServices,
+    setCollectionName,
+    setCount,
+    setStart,
+    setDocId,
+    setServicesArr,
+    locationParams,
+  ]);
 
   useEffect(() => {
-    setRepairShops(secondaryData);
-    // console.log(secondaryData);
-  }, [secondaryData]);
+    setRepairShops(data);
+  }, [data]);
 
   useEffect(() => {
     setDoc(singleDoc);
@@ -62,28 +102,25 @@ const SingleShop = () => {
   }, [singleDoc]);
 
   useEffect(() => {
-    setLastDoc(null);
-    if (locationParams) {
-      if (
-        locations.find(
-          (i) =>
-            i.collectionName.toLowerCase() == locationParams.toLocaleLowerCase()
-        )
-      ) {
-        // console.log(location);
-        setLocation(locationParams);
-      } else {
-        navigate("/missing");
-      }
-    } else {
-      setLocation("repairShops");
-    }
+    locationParams &&
+      !locations.find(
+        (i) =>
+          i.collectionName.toLowerCase() == locationParams.toLocaleLowerCase()
+      ) &&
+      navigate("/missing");
+
     if (services == searchServices?.join(",")) {
       return;
     } else {
       setSearchServices(services?.split(","));
     }
-  }, [locationParams, navigate, location, services, searchServices]);
+  }, [locationParams, navigate, services, searchServices]);
+
+  // Set LastDoc to allow for Loading More Shops
+  useEffect(() => {
+    services && data.length < 1 && setLastDoc(null);
+    !services && data.length < 1 && setLastDoc(null);
+  }, [services, data]);
 
   useEffect(() => {
     const handleNetworkChange = () => {
@@ -113,8 +150,8 @@ const SingleShop = () => {
   }, [id, navigate, locationParams]);
 
   useEffect(() => {
-    secondaryFetchError && setLastDoc("Not Allowed");
-  }, [secondaryFetchError]);
+    fetchError && setLastDoc("Not Allowed");
+  }, [fetchError]);
 
   useEffect(() => {
     fetchError && navigate("/missing");
@@ -333,7 +370,7 @@ const SingleShop = () => {
           </i>
         </div>
       )}
-      {isLoading && !fetchError && (
+      {docIsLoading && !docFetchError && (
         <div className="flex justify-center mb-10">
           <div
             className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 dark:text-blue-400 rounded-full"
@@ -345,7 +382,7 @@ const SingleShop = () => {
         </div>
       )}
 
-      {fetchError && !isLoading && (
+      {docFetchError && !docIsLoading && (
         <section id="Top-Rated" className="flex flex-col gap-2 sm:gap-4 mb-10">
           <div className="flex justify-center">
             <p className="text-red-600 dark:text-red-500 dark:brightness-110 font-medium tracking-wide flex gap-2 items-center">
@@ -354,13 +391,13 @@ const SingleShop = () => {
                   <MdErrorOutline />
                 </IconContext.Provider>
               </span>
-              <span className="whitespace-normal">{fetchError}</span>
+              <span className="whitespace-normal">{docFetchError}</span>
             </p>
           </div>
         </section>
       )}
 
-      {doc && !isLoading && (
+      {doc && !docIsLoading && (
         <section className="flex flex-col gap-4">
           <div className="w-full flex h-[300px] md:h-[350px] overflow-x-auto noScrollBar">
             {doc.images != "N/A" ? (
@@ -370,7 +407,7 @@ const SingleShop = () => {
                     alt={`${doc.headers.title} Workshop Image`}
                     src={item}
                     key={index}
-                    className="w-5/6 sm:w-2/3 h-full object-cover p-2"
+                    className="w-5/6 sm:w-2/3 h-full object-cover p-1 rounded-xl"
                   />
                 ))
               ) : (
@@ -584,14 +621,19 @@ const SingleShop = () => {
       )}
 
       <section className="flex flex-col gap-4 items-center overflow-x-hidden">
-        {(!isLoading && !secondaryIsLoading) ||
-        (!isLoading && secondaryIsLoading) ||
-        (isLoading && !secondaryIsLoading) ? (
+        {(!docIsLoading && !isLoading) ||
+        (!docIsLoading && isLoading) ||
+        (docIsLoading && !isLoading) ? (
           <>
             <div className="flex w-full gap-4 items-center py-1">
               {!services && (
                 <h3 className="font-bold">
-                  {locationParams
+                  {locationParams &&
+                  locations.find(
+                    (i) =>
+                      i.collectionName.toLowerCase() ==
+                      locationParams.toLowerCase()
+                  )
                     ? `Recommended Repair Shops In ${
                         locations.find(
                           (i) =>
@@ -603,16 +645,29 @@ const SingleShop = () => {
                 </h3>
               )}
               {services && (
-                <>
-                  <h3 className="font-bold">Sorted By Services</h3>
+                <div className="flex sm:flex-row flex-col gap-2">
+                  {/* <h3 className="font-bold">Sorted By Services</h3> */}
+                  <h3 className="font-bold inline whitespace-nowrap">
+                    Shops{" "}
+                    {locationParams &&
+                      locations.find(
+                        (i) => i.collectionName == locationParams
+                      ) &&
+                      `In ${
+                        locations.find(
+                          (i) => i.collectionName == locationParams
+                        ).name
+                      } `}
+                    Sorted By Services
+                  </h3>
                   <button
                     aria-label="Reset Sorting"
                     onClick={handleReset}
-                    className="p-1 px-2 bg-yellow-700 tracking-wider text-white rounded-lg ring-2 ring-yellow-500/50 text-xs shadow-custom-1 transition-all"
+                    className="p-1 px-2 bg-yellow-600 tracking-wider text-white rounded-lg ring-2 ring-yellow-500/50 text-xs shadow-custom-1 transition-all sm:w-auto w-max"
                   >
                     Reset Sorting
                   </button>
-                </>
+                </div>
               )}
             </div>
             {services && (
@@ -851,7 +906,7 @@ const SingleShop = () => {
                 </article>
               ))}
             </div>
-            {!secondaryIsLoading &&
+            {!isLoading &&
               (hasNextPage.current ? (
                 <div className="flex justify-center">
                   <button
@@ -870,7 +925,7 @@ const SingleShop = () => {
           </>
         )}
       </section>
-      {secondaryIsLoading && !secondaryFetchError && (
+      {isLoading && !fetchError && (
         <div className="flex justify-center">
           <div
             className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 dark:text-blue-400 rounded-full"
@@ -881,9 +936,9 @@ const SingleShop = () => {
           </div>
         </div>
       )}
-      {secondaryFetchError && !secondaryIsLoading && (
+      {fetchError && !isLoading && (
         <section id="Top-Rated" className="flex flex-col gap-2 sm:gap-4 mb-6">
-          {console.log(secondaryFetchError)}
+          {console.log(fetchError)}
           <div className="flex justify-center">
             <p className="text-red-600 dark:text-red-500 dark:brightness-110 font-medium tracking-wide flex gap-2 items-center">
               <span>
@@ -891,7 +946,7 @@ const SingleShop = () => {
                   <MdErrorOutline />
                 </IconContext.Provider>
               </span>
-              <span className="whitespace-normal">{secondaryFetchError}</span>
+              <span className="whitespace-normal">{fetchError}</span>
             </p>
           </div>
         </section>

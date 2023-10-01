@@ -16,19 +16,28 @@ import {
 import { GiAutoRepair } from "react-icons/gi";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { Link } from "react-router-dom";
-import useFirebase from "../hooks/useFirebase";
+// import useFirebase from "../hooks/useFirebase";
+import { useContext } from "react";
+import FirebaseContext from "../contexts/FirebaseContext";
 
 const HomePage = () => {
   const [repairShops, setRepairShops] = useState([]);
-  const { data, isLoading, fetchError } = useFirebase("repairShops", null, 8);
+  const { data, isLoading, fetchError, setCollectionName, setCount } =
+    useContext(FirebaseContext);
+  // const { data, isLoading, fetchError } = useFirebase("repairShops", null, 8);
 
   useEffect(() => {
-    setRepairShops(data);
+    data && setRepairShops(data);
   }, [data]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    setCollectionName("repairShops");
+    setCount(8);
+  }, [setCollectionName, setCount]);
 
   const hasFloat = (number) => {
     return number?.toString().split(".")[1] > 0;
@@ -770,7 +779,7 @@ const HomePage = () => {
         </div>
       </div>
       {/* <!-- End Icon Blocks --> */}
-      {repairShops.length > 0 && (
+      {repairShops?.length > 0 && (
         <section className="flex flex-col gap-3 items-center">
           <h3 className="font-roboto text-lg self-start">
             Top Rated Repair Shops In Nigeria
@@ -788,7 +797,7 @@ const HomePage = () => {
                     >
                       <img
                         src={
-                          item.images.length > 0 && item.images != "N/A"
+                          item.images?.length > 0 && item.images != "N/A"
                             ? item.images[0]
                             : "https://www.gstatic.com/ads-homeservices/profile_photo_placeholder.png"
                         }

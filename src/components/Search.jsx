@@ -55,6 +55,8 @@ function Search({ toggleSearchOverlay }) {
           );
         } else {
           setGetPositionError("Location Not Found");
+          setIsLoading(false);
+          setSearch("");
         }
       })
       .catch((err) => {
@@ -87,10 +89,15 @@ function Search({ toggleSearchOverlay }) {
             "pointer-events-none",
             "user-select-none"
           );
+          console.log(err);
           if (err.code == 1) {
             setGetPositionError(
               "Please enable your location and reload or type any location in the search box"
             );
+          } else if (err.code == 2) {
+            setGetPositionError("Network error");
+          } else if (err.code == 3) {
+            setGetPositionError("Request timeout, please try again");
           } else {
             setGetPositionError(err.message);
           }
@@ -158,7 +165,7 @@ function Search({ toggleSearchOverlay }) {
       () => initAutocomplete(),
       (err) => {
         console.log(err);
-        setGetPositionError("Could Not Get Position");
+        // setGetPositionError("Could Not Get Position");
         setIsLoading(false);
       }
     );

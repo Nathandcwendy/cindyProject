@@ -427,7 +427,7 @@ const Header = () => {
               </a> */}
 
               <HashLink
-                to="#subscribe"
+                to={`${location.search ? location.search : ""}#subscribe`}
                 scroll={(el) =>
                   el.scrollIntoView({
                     behavior: "smooth",
@@ -976,7 +976,7 @@ const Header = () => {
               <li>
                 <HashLink
                   className="flex items-center gap-x-3.5 py-2 px-2.5  text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-white dark:hover:text-slate-300"
-                  to="#subscribe"
+                  to={`${location.search ? location.search : ""}#subscribe`}
                   scroll={(el) =>
                     el.scrollIntoView({
                       behavior: "smooth",

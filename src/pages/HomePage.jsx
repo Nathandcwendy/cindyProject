@@ -15,7 +15,7 @@ import {
 } from "react-icons/md";
 import { GiAutoRepair } from "react-icons/gi";
 // import { LiaFileInvoiceSolid } from "react-icons/lia";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // import useFirebase from "../hooks/useFirebase";
 import { useContext } from "react";
 import FirebaseContext from "../contexts/FirebaseContext";
@@ -23,6 +23,7 @@ import BrandName from "../components/BrandName";
 import { HashLink } from "react-router-hash-link";
 
 const HomePage = () => {
+  const location = useLocation();
   const [repairShops, setRepairShops] = useState([]);
   const { data, isLoading, fetchError, setCollectionName, setCount } =
     useContext(FirebaseContext);
@@ -944,7 +945,7 @@ const HomePage = () => {
 
           {/* <!-- Card --> */}
           <HashLink
-            to="#subscribe"
+            to={`${location.search}#subscribe`}
             scroll={(el) =>
               el.scrollIntoView({
                 behavior: "smooth",

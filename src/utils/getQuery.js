@@ -4,12 +4,11 @@ import {
   limit,
   where,
   startAfter,
-} from "firebase/firestore/lite";
+} from "firebase/firestore";
 
 const getQuery = (start, count, arr, collectionName, field, db) => {
   let length = arr.length;
   const collectionRef = collection(db, collectionName);
-
   if (length == 1 && start && count) {
     let q = query(
       collectionRef,

@@ -18,6 +18,9 @@ const RepairShops = lazy(() => import("./pages/RepairShops.jsx"));
 const SingleShop = lazy(() => import("./pages/SingleShop.jsx"));
 const FindRepairShops = lazy(() => import("./pages/FindRepairShops.jsx"));
 const SearchSingleShop = lazy(() => import("./pages/SearchSingleShop.jsx"));
+const Login = lazy(() => import("./pages/Login.jsx"));
+const Tpp = lazy(() => import("./pages/Tpp.jsx"));
+const PrivateRoutes = lazy(() => import("./pages/PrivateRoutes.jsx"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,6 +37,10 @@ const router = createBrowserRouter(
         <Route path="search/" element={<FindRepairShops />} />
         <Route path="search/profile/:id" element={<SearchSingleShop />} />
         <Route path="getquote" element={<GetQuotePage />} />
+        <Route path="login" element={<Login />} />
+        <Route path="/tpp" element={<PrivateRoutes />}>
+          <Route index element={<Tpp />} />
+        </Route>
       </Route>
       <Route path="*" element={<MissingPage />} />
     </>

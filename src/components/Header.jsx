@@ -7,6 +7,7 @@ import {
   MdContactMail,
   MdOutlineContactMail,
 } from "react-icons/md";
+import { IoLogInOutline, IoLogOutOutline } from "react-icons/io5";
 import { IconContext } from "react-icons/lib";
 import {
   Link,
@@ -21,6 +22,7 @@ import { HashLink } from "react-router-hash-link";
 import Search from "./Search";
 import ThemeContext from "../contexts/ThemeContext";
 import { locations, services } from "../utils/utils";
+import FirebaseContext from "../contexts/FirebaseContext";
 
 const Header = () => {
   const { location: locationParam, id: shopName } = useParams();
@@ -41,6 +43,7 @@ const Header = () => {
   const checked = useRef([]);
   const [paths, setPaths] = useState(["Home"]);
   const { theme, setTheme } = useContext(ThemeContext);
+  const { auth, signOut } = useContext(FirebaseContext);
 
   const handleClearSelected = () => {
     let checkBoxes = Array.from(
@@ -990,6 +993,30 @@ const Header = () => {
                   </IconContext.Provider>
                   <span>Subscribe</span>
                 </HashLink>
+              </li>
+              <li>
+                <Link
+                  to={"/login"}
+                  className="flex items-center gap-x-3.5 py-2 px-2.5   text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-white"
+                >
+                  <IconContext.Provider value={{ className: "w-5 h-5" }}>
+                    <IoLogInOutline />
+                  </IconContext.Provider>
+                  Login
+                </Link>
+              </li>
+              <li>
+                <button
+                  className="flex items-center gap-x-3.5 py-2 px-2.5   text-slate-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-white w-full"
+                  onClick={() => {
+                    signOut(auth);
+                  }}
+                >
+                  <IconContext.Provider value={{ className: "w-5 h-5" }}>
+                    <IoLogOutOutline />
+                  </IconContext.Provider>
+                  Logout
+                </button>
               </li>
             </ul>
           </nav>

@@ -11,7 +11,19 @@ import {
   startAfter,
   getDoc,
   doc,
-} from "firebase/firestore/lite";
+  serverTimestamp,
+  addDoc,
+  onSnapshot,
+  deleteDoc,
+} from "firebase/firestore";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  setPersistence,
+  browserSessionPersistence,
+  signOut,
+} from "firebase/auth";
 import getQuery from "../utils/getQuery";
 
 const firebaseConfig = {
@@ -25,6 +37,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
 });
@@ -44,8 +57,24 @@ export const FirebaseProvider = ({ children }) => {
   const [docId, setDocId] = useState(null);
   const [collectionName, setCollectionName] = useState("");
   const [servicesArr, setServicesArr] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const hasNextPage = useRef(null);
   const lastDoc = useRef(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // console.log("Auth State Change", user.uid);
+        setUser(user);
+        setAuthLoading(false);
+      } else {
+        // console.log("Auth State Change", "UnAthenticated");
+        setUser(null);
+        setAuthLoading(false);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (collectionName) {
@@ -95,7 +124,7 @@ export const FirebaseProvider = ({ children }) => {
         }
         setIsLoading(true);
         setFetchError(null);
-        // console.log("GETTING DOCS SNAPSHOTS");
+
         await getDocs(q).then(
           (snapShot) => {
             // console.log(snapShot);
@@ -191,6 +220,7 @@ export const FirebaseProvider = ({ children }) => {
     }
     return () => (isMounted = false);
   }, [docId]);
+
   return (
     <FirebaseContext.Provider
       value={{
@@ -207,6 +237,23 @@ export const FirebaseProvider = ({ children }) => {
         setDocId,
         setCollectionName,
         setServicesArr,
+        signInWithEmailAndPassword,
+        user,
+        setUser,
+        setPersistence,
+        browserSessionPersistence,
+        authLoading,
+        db,
+        getDocs,
+        doc,
+        serverTimestamp,
+        collection,
+        onSnapshot,
+        query,
+        deleteDoc,
+        addDoc,
+        auth,
+        signOut,
       }}
     >
       {children}
